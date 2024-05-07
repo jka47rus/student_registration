@@ -1,10 +1,11 @@
 package com.example.student_registration;
 
+import com.example.student_registration.event.EventHolder;
 import com.example.student_registration.model.Student;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.Collections;
@@ -12,12 +13,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ShellComponent
-@Component
 public class Registration {
+    private final ApplicationEventPublisher publisher;
     private final Map<Integer, Student> students = new HashMap<>();
 
+    public Registration(ApplicationEventPublisher publisher) {
+        this.publisher = publisher;
+    }
+
     @ShellMethod(key = "i")
-    public String init(@ShellOption(value = "n") String name,
+    public void init(@ShellOption(value = "n") String name,
                        @ShellOption(value = "l") String lastName,
                        @ShellOption(value = "a") Integer age) {
 //        System.out.println("Введите данные студента в формате: init --n Name --l Second name --a age");
@@ -28,9 +33,7 @@ public class Registration {
                 .build();
         Integer id = idGenerator();
         students.put(id, student);
-        return MessageFormat.format("Студент: {0} {1} {2}, id №{3}  записан!",
-                student.getName(), student.getLastName(), student.getAge(), id);
-
+        publisher.publishEvent(new EventHolder(this, student, 0));
     }
 
 
@@ -60,8 +63,8 @@ public class Registration {
         if (!students.containsKey(id)) {
             System.out.printf("Студент с id №%s отсутствует в списке!\n", id);
         } else {
+            publisher.publishEvent(new EventHolder(this, students.get(id), 1));
             students.remove(id);
-            System.out.format("Студент с id №%s удален!\n", id);
         }
     }
 
