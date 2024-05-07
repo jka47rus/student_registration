@@ -63,7 +63,7 @@ public class Registration {
         if (!students.containsKey(id)) {
             System.out.printf("Студент с id №%s отсутствует в списке!\n", id);
         } else {
-            publisher.publishEvent(new EventHolder(this, students.get(id), 1));
+            publisher.publishEvent(new EventHolder(this, students.get(id), id));
             students.remove(id);
         }
     }

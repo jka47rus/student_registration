@@ -21,7 +21,7 @@ public class EventHolderListener {
     }
 
     private void deleteStudent(EventHolder eventHolder) {
-        System.out.printf("Студент: %s %s удален!%n",
+        System.out.printf("Студент id №%d: %s %s удален!%n", eventHolder.getNumber(),
                 eventHolder.getStudent().getName(), eventHolder.getStudent().getLastName());
     }
 
