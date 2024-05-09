@@ -7,7 +7,6 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
-import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +14,7 @@ import java.util.Map;
 @ShellComponent
 public class Registration {
     private final ApplicationEventPublisher publisher;
-    private final Map<Integer, Student> students = new HashMap<>();
+    public static final Map<Integer, Student> students = new HashMap<>();
 
     public Registration(ApplicationEventPublisher publisher) {
         this.publisher = publisher;
@@ -23,9 +22,8 @@ public class Registration {
 
     @ShellMethod(key = "i")
     public void init(@ShellOption(value = "n") String name,
-                       @ShellOption(value = "l") String lastName,
-                       @ShellOption(value = "a") Integer age) {
-//        System.out.println("Введите данные студента в формате: init --n Name --l Second name --a age");
+                     @ShellOption(value = "l") String lastName,
+                     @ShellOption(value = "a") Integer age) {
         Student student = Student.builder()
                 .name(name)
                 .lastName(lastName)
@@ -37,7 +35,7 @@ public class Registration {
     }
 
 
-    private Integer idGenerator() {
+    public static Integer idGenerator() {
         Integer id = 0;
         if (students.isEmpty()) {
             id = 1;
@@ -77,20 +75,4 @@ public class Registration {
             System.out.println("Список студентов очищен!\n");
         }
     }
-
-    public String crateStudent(String name,
-                               String lastName,
-                               Integer age) {
-        Student student = Student.builder()
-                .name(name)
-                .lastName(lastName)
-                .age(age)
-                .build();
-
-        Integer id = idGenerator();
-        students.put(id, student);
-        return MessageFormat.format("Студент: {0} {1} {2}, id №{3}  записан!",
-                student.getName(), student.getLastName(), student.getAge(), id);
-    }
-
 }
